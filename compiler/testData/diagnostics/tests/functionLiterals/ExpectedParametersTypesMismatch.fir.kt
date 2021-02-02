@@ -30,7 +30,7 @@ fun test1() {
     }
 
 
-    foo2 {
+    <!INAPPLICABLE_CANDIDATE!>foo2<!> {
         ""
     }
     <!INAPPLICABLE_CANDIDATE!>foo2<!> {
@@ -39,7 +39,7 @@ fun test1() {
     <!INAPPLICABLE_CANDIDATE!>foo2<!> {
         x -> ""
     }
-    foo2 {
+    <!INAPPLICABLE_CANDIDATE!>foo2<!> {
          -> 42
     }
 }
