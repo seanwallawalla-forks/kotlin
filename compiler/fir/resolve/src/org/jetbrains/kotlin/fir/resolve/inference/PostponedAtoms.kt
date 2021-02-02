@@ -165,7 +165,7 @@ internal fun extractInputOutputTypesFromCallableReferenceExpectedType(
 
     return when {
         expectedType.isBuiltinFunctionalType(session) ->
-            InputOutputTypes(expectedType.valueParameterTypes(session, withReceiver = true), expectedType.returnType(session))
+            InputOutputTypes(expectedType.valueParameterTypesWithReceiver(session), expectedType.returnType(session))
 
 //        ReflectionTypes.isBaseTypeForNumberedReferenceTypes(expectedType) ->
 //            InputOutputTypes(emptyList(), expectedType.arguments.single().type.unwrap())

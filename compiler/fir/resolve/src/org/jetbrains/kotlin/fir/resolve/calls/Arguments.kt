@@ -516,7 +516,7 @@ fun FirExpression.isFunctional(
                 return false
             }
             val parameterPairs =
-                invokeSymbol.fir.valueParameters.zip(classLikeExpectedFunctionType.valueParameterTypes(session, withReceiver = true))
+                invokeSymbol.fir.valueParameters.zip(classLikeExpectedFunctionType.valueParameterTypesWithReceiver(session))
             return parameterPairs.all { (invokeParameter, expectedParameter) ->
                 val expectedParameterType = expectedParameter.lowerBoundIfFlexible()
                 expectedParameterType is ConeTypeParameterType ||
