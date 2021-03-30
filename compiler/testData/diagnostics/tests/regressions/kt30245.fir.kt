@@ -46,9 +46,9 @@ fun test1() { // to extension lambda 0
 
     val w11 = <!INAPPLICABLE_CANDIDATE!>W1<!> { i: Int -> i } // oi- ni-
     val i11: E0 = id { i: Int -> i } // o1+ ni+
-    val w12 = <!INAPPLICABLE_CANDIDATE!>W1<!> { i -> i } // oi- ni-
-    val i12: E0 = id { i -> i } // oi- ni-
-    val j12 = id<E0> { i -> i } // oi- ni-
+    val w12 = <!INAPPLICABLE_CANDIDATE!>W1<!> { <!CANNOT_INFER_PARAMETER_TYPE!>i<!> -> i } // oi- ni-
+    val i12: E0 = id { <!CANNOT_INFER_PARAMETER_TYPE!>i<!> -> i } // oi- ni-
+    val j12 = id<E0> { <!CANNOT_INFER_PARAMETER_TYPE!>i<!> -> i } // oi- ni-
 
     // yet unsupported cases - considering lambdas as extension ones unconditionally
 //    val w13 = W1 { it } // this or it: oi- ni-
@@ -83,8 +83,8 @@ fun test2() { // to extension lambda 1
     val i27: E1 = when (e) { E.VALUE ->  { s: String -> <!NO_THIS!>this<!> + s.length } } // oi+ ni+
     val i27a: E1 = when (e) { E.VALUE ->  { s -> <!NO_THIS!>this<!> + s.<!UNRESOLVED_REFERENCE!>length<!> } } // oi+ ni+
 
-    val w28 = <!INAPPLICABLE_CANDIDATE!>W2<!> { i: Int, s -> i <!AMBIGUITY!>+<!> s.<!UNRESOLVED_REFERENCE!>length<!> } // oi- ni-
-    val i28: E1 = id { i: Int, s -> i <!AMBIGUITY!>+<!> s.<!UNRESOLVED_REFERENCE!>length<!> } // oi- ni-
+    val w28 = <!INAPPLICABLE_CANDIDATE!>W2<!> { i: Int, <!CANNOT_INFER_PARAMETER_TYPE!>s<!> -> i <!AMBIGUITY!>+<!> s.<!UNRESOLVED_REFERENCE!>length<!> } // oi- ni-
+    val i28: E1 = id { i: Int, <!CANNOT_INFER_PARAMETER_TYPE!>s<!> -> i <!AMBIGUITY!>+<!> s.<!UNRESOLVED_REFERENCE!>length<!> } // oi- ni-
     val w29 = <!INAPPLICABLE_CANDIDATE!>W2<!> { i: Int, s: String -> i + s.length } // oi- ni-
     val i29: E1 = id { i: Int, s: String -> i + s.length } // oi+ ni+
 

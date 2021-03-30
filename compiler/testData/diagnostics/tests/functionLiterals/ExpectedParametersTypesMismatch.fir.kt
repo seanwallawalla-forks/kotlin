@@ -13,7 +13,7 @@ fun test1() {
         s: String-> ""
     }
     <!INAPPLICABLE_CANDIDATE!>foo0<!> {
-        x, y -> ""
+        <!CANNOT_INFER_PARAMETER_TYPE!>x<!>, <!CANNOT_INFER_PARAMETER_TYPE!>y<!> -> ""
     }
 
     foo1 {
@@ -23,7 +23,7 @@ fun test1() {
         s: String -> ""
     }
     <!INAPPLICABLE_CANDIDATE!>foo1<!> {
-        x, y -> ""
+        x, <!CANNOT_INFER_PARAMETER_TYPE!>y<!> -> ""
     }
     foo1 {
         -> 42

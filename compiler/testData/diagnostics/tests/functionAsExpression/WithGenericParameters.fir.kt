@@ -12,8 +12,8 @@ fun fun_with_where() = fun <T> <!UNRESOLVED_REFERENCE!>T<!>.(t: <!UNRESOLVED_REF
 
 fun outer() {
     devNull(fun <T>() {})
-    devNull(fun <T> T.() {})
-    devNull(fun <T> (): T = null!!)
-    devNull(fun <T> (t: T) {})
+    devNull(fun <T> <!UNRESOLVED_REFERENCE!>T<!>.() {})
+    devNull(fun <T> (): <!UNRESOLVED_REFERENCE, UNRESOLVED_REFERENCE!>T<!> = null!!)
+    devNull(fun <T> (t: <!UNRESOLVED_REFERENCE!>T<!>) {})
     devNull(fun <T> () where T:A {})
 }
