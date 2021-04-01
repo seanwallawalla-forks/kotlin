@@ -11,32 +11,6 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlin.math.sign
 
-internal const val NANOS_IN_MILLIS = 1_000_000
-internal const val MAX_NANOS = Long.MAX_VALUE / 2 / NANOS_IN_MILLIS * NANOS_IN_MILLIS - 1 // ends in ..._999_999
-internal const val MAX_MILLIS = Long.MAX_VALUE / 2
-private const val MAX_NANOS_IN_MILLIS = MAX_NANOS / NANOS_IN_MILLIS  // MAX_NANOS expressed in milliseconds
-
-private fun nanosToMillis(nanos: Long): Long = nanos / NANOS_IN_MILLIS
-private fun millisToNanos(millis: Long): Long = millis * NANOS_IN_MILLIS
-
-@ExperimentalTime private fun durationOfNanos(normalNanos: Long) = Duration(normalNanos shl 1)
-@ExperimentalTime private fun durationOfMillis(normalMillis: Long) = Duration((normalMillis shl 1) + 1)
-@ExperimentalTime private fun durationOf(normalValue: Long, unitDiscriminator: Int) = Duration((normalValue shl 1) + unitDiscriminator)
-@ExperimentalTime private fun durationOfNanosNormalized(nanos: Long) =
-    if (nanos in -MAX_NANOS..MAX_NANOS) {
-        durationOfNanos(nanos)
-    } else {
-        durationOfMillis(nanosToMillis(nanos))
-    }
-
-@ExperimentalTime private fun durationOfMillisNormalized(millis: Long) =
-    if (millis in -MAX_NANOS_IN_MILLIS..MAX_NANOS_IN_MILLIS) {
-        durationOfNanos(millisToNanos(millis))
-    } else {
-        durationOfMillis(millis.coerceIn(-MAX_MILLIS, MAX_MILLIS))
-    }
-
-
 /**
  * Represents the amount of time one instant of time is away from another instant.
  *
@@ -950,6 +924,40 @@ public inline operator fun Int.times(duration: Duration): Duration = duration * 
 @ExperimentalTime
 @kotlin.internal.InlineOnly
 public inline operator fun Double.times(duration: Duration): Duration = duration * this
+
+
+// The ranges are chosen so that they are:
+// - symmetric relative to zero: this greatly simplifies operations with sign, e.g. unaryMinus and minus.
+// - non-overlapping, but adjacent: the first value that doesn't fit in nanos range, can be exactly represented in millis.
+
+internal const val NANOS_IN_MILLIS = 1_000_000
+// maximum number duration can store in nanosecond range
+internal const val MAX_NANOS = Long.MAX_VALUE / 2 / NANOS_IN_MILLIS * NANOS_IN_MILLIS - 1 // ends in ..._999_999
+// maximum number duration can store in millisecond range, also encodes an infinite value
+internal const val MAX_MILLIS = Long.MAX_VALUE / 2
+// MAX_NANOS expressed in milliseconds
+private const val MAX_NANOS_IN_MILLIS = MAX_NANOS / NANOS_IN_MILLIS
+
+private fun nanosToMillis(nanos: Long): Long = nanos / NANOS_IN_MILLIS
+private fun millisToNanos(millis: Long): Long = millis * NANOS_IN_MILLIS
+
+@ExperimentalTime private fun durationOfNanos(normalNanos: Long) = Duration(normalNanos shl 1)
+@ExperimentalTime private fun durationOfMillis(normalMillis: Long) = Duration((normalMillis shl 1) + 1)
+@ExperimentalTime private fun durationOf(normalValue: Long, unitDiscriminator: Int) = Duration((normalValue shl 1) + unitDiscriminator)
+@ExperimentalTime private fun durationOfNanosNormalized(nanos: Long) =
+    if (nanos in -MAX_NANOS..MAX_NANOS) {
+        durationOfNanos(nanos)
+    } else {
+        durationOfMillis(nanosToMillis(nanos))
+    }
+
+@ExperimentalTime private fun durationOfMillisNormalized(millis: Long) =
+    if (millis in -MAX_NANOS_IN_MILLIS..MAX_NANOS_IN_MILLIS) {
+        durationOfNanos(millisToNanos(millis))
+    } else {
+        durationOfMillis(millis.coerceIn(-MAX_MILLIS, MAX_MILLIS))
+    }
+
 
 internal expect fun formatToExactDecimals(value: Double, decimals: Int): String
 internal expect fun formatUpToDecimals(value: Double, decimals: Int): String
