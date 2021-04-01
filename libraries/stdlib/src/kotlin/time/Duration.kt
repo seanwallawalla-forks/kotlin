@@ -17,7 +17,10 @@ import kotlin.math.sign
  * A negative duration is possible in a situation when the second instant is earlier than the first one.
  * An infinite duration value [Duration.INFINITE] can be used to represent infinite timeouts.
  *
- * To construct a duration use either the extension function [toDuration] available on [Int], [Long], and [Double] numeric types,
+ * The type can store duration values up to ±146 years with nanosecond precision,
+ * and up to ±146 million years with millisecond precision.
+ *
+ * To construct a duration, use either the extension function [toDuration] available on [Int], [Long], and [Double] numeric types,
  * or the `Duration` companion object functions [Duration.hours], [Duration.minutes], [Duration.seconds], and so on,
  * taking [Int], [Long], or [Double] numbers as parameters.
  *
