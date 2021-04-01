@@ -461,7 +461,11 @@ public value class Duration internal constructor(private val rawValue: Long) : C
 
     // conversion to units
 
-    /** Returns the value of this duration expressed as a [Double] number of the specified [unit]. */
+    /**
+     * Returns the value of this duration expressed as a [Double] number of the specified [unit].
+     *
+     * An infinite duration value is converted either to [Double.POSITIVE_INFINITY] or [Double.NEGATIVE_INFINITY] depending on its sign.
+     */
     public fun toDouble(unit: DurationUnit): Double {
         return when (rawValue) {
             INFINITE.rawValue -> Double.POSITIVE_INFINITY
@@ -476,7 +480,11 @@ public value class Duration internal constructor(private val rawValue: Long) : C
     /**
      * Returns the value of this duration expressed as a [Long] number of the specified [unit].
      *
-     * If the value doesn't fit in the range of [Long] type, it is coerced into that range, see the conversion [Double.toLong] for details.
+     * If the result doesn't fit in the range of [Long] type, it is coerced into that range:
+     * - [Long.MIN_VALUE] is returned if it's less than `Long.MIN_VALUE`,
+     * - [Long.MAX_VALUE] is returned if it's greater than `Long.MAX_VALUE`.
+     *
+     * An infinite duration value is converted either to [Long.MAX_VALUE] or [Long.MIN_VALUE] depending on its sign.
      */
     public fun toLong(unit: DurationUnit): Long {
         return when (rawValue) {
@@ -489,7 +497,11 @@ public value class Duration internal constructor(private val rawValue: Long) : C
     /**
      * Returns the value of this duration expressed as an [Int] number of the specified [unit].
      *
-     * If the value doesn't fit in the range of [Int] type, it is coerced into that range, see the conversion [Double.toInt] for details.
+     * If the result doesn't fit in the range of [Int] type, it is coerced into that range:
+     * - [Int.MIN_VALUE] is returned if it's less than `Int.MIN_VALUE`,
+     * - [Int.MAX_VALUE] is returned if it's greater than `Int.MAX_VALUE`.
+     *
+     * An infinite duration value is converted either to [Int.MAX_VALUE] or [Int.MIN_VALUE] depending on its sign.
      */
     public fun toInt(unit: DurationUnit): Int =
         toLong(unit).coerceIn(Int.MIN_VALUE.toLong(), Int.MAX_VALUE.toLong()).toInt()
@@ -523,39 +535,75 @@ public value class Duration internal constructor(private val rawValue: Long) : C
     public val inNanoseconds: Double get() = toDouble(DurationUnit.NANOSECONDS)
 
 
-    /** The value of this duration expressed as a [Long] number of days. */
+    /**
+     * The value of this duration expressed as a [Long] number of days.
+     *
+     * An infinite duration value is converted either to [Long.MAX_VALUE] or [Long.MIN_VALUE] depending on its sign.
+     */
     @SinceKotlin("1.5")
     public val inWholeDays: Long
         get() = toLong(DurationUnit.DAYS)
 
-    /** The value of this duration expressed as a [Long] number of hours. */
+    /**
+     * The value of this duration expressed as a [Long] number of hours.
+     *
+     * An infinite duration value is converted either to [Long.MAX_VALUE] or [Long.MIN_VALUE] depending on its sign.
+     */
     @SinceKotlin("1.5")
     public val inWholeHours: Long
         get() = toLong(DurationUnit.HOURS)
 
-    /** The value of this duration expressed as a [Long] number of minutes. */
+    /**
+     * The value of this duration expressed as a [Long] number of minutes.
+     *
+     * An infinite duration value is converted either to [Long.MAX_VALUE] or [Long.MIN_VALUE] depending on its sign.
+     */
     @SinceKotlin("1.5")
     public val inWholeMinutes: Long
         get() = toLong(DurationUnit.MINUTES)
 
-    /** The value of this duration expressed as a [Long] number of seconds. */
+    /**
+     * The value of this duration expressed as a [Long] number of seconds.
+     *
+     * An infinite duration value is converted either to [Long.MAX_VALUE] or [Long.MIN_VALUE] depending on its sign.
+     */
     @SinceKotlin("1.5")
     public val inWholeSeconds: Long
         get() = toLong(DurationUnit.SECONDS)
 
-    /** The value of this duration expressed as a [Long] number of milliseconds. */
+    /**
+     * The value of this duration expressed as a [Long] number of milliseconds.
+     *
+     * An infinite duration value is converted either to [Long.MAX_VALUE] or [Long.MIN_VALUE] depending on its sign.
+     */
     @SinceKotlin("1.5")
     public val inWholeMilliseconds: Long
         get() {
             return if (isInMillis() && isFinite()) value else toLong(DurationUnit.MILLISECONDS)
         }
 
-    /** The value of this duration expressed as a [Long] number of microseconds. */
+    /**
+     * The value of this duration expressed as a [Long] number of microseconds.
+     *
+     * If the result doesn't fit in the range of [Long] type, it is coerced into that range:
+     * - [Long.MIN_VALUE] is returned if it's less than `Long.MIN_VALUE`,
+     * - [Long.MAX_VALUE] is returned if it's greater than `Long.MAX_VALUE`.
+     *
+     * An infinite duration value is converted either to [Long.MAX_VALUE] or [Long.MIN_VALUE] depending on its sign.
+     */
     @SinceKotlin("1.5")
     public val inWholeMicroseconds: Long
         get() = toLong(DurationUnit.MICROSECONDS)
 
-    /** The value of this duration expressed as a [Long] number of nanoseconds. */
+    /**
+     * The value of this duration expressed as a [Long] number of nanoseconds.
+     *
+     * If the result doesn't fit in the range of [Long] type, it is coerced into that range:
+     * - [Long.MIN_VALUE] is returned if it's less than `Long.MIN_VALUE`,
+     * - [Long.MAX_VALUE] is returned if it's greater than `Long.MAX_VALUE`.
+     *
+     * An infinite duration value is converted either to [Long.MAX_VALUE] or [Long.MIN_VALUE] depending on its sign.
+     */
     @SinceKotlin("1.5")
     public val inWholeNanoseconds: Long
         get() {
