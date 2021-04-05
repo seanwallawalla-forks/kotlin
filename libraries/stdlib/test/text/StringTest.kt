@@ -931,6 +931,7 @@ class StringTest {
         }
 
         CharTest.equalIgnoreCaseGroups
+            .filterNot { "i" in it } // not supported by JS
             .forEach { testIgnoreCase(it) }
     }
 
