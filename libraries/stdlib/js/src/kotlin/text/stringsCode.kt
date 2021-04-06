@@ -57,12 +57,16 @@ public actual fun CharSequence.isBlank(): Boolean = length == 0 || (if (this is 
 @OptIn(ExperimentalStdlibApi::class)
 @Suppress("ACTUAL_FUNCTION_WITH_DEFAULT_ARGUMENTS")
 public actual fun String?.equals(other: String?, ignoreCase: Boolean = false): Boolean =
-    if (this == null)
-        other == null
-    else if (!ignoreCase)
-        this == other
-    else
-        other != null && this.lowercase() == other.lowercase()
+    when {
+        this == null -> other == null
+        !ignoreCase -> this == other
+        other == null -> false
+        else -> {
+            val thisLower = this.lowercase()
+            val otherLower = other.lowercase()
+            thisLower == otherLower || (thisLower.uppercase() == otherLower.uppercase())
+        }
+    }
 
 
 @Suppress("ACTUAL_FUNCTION_WITH_DEFAULT_ARGUMENTS")
