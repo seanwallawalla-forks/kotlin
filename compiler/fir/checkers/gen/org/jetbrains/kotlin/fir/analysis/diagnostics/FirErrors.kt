@@ -225,6 +225,7 @@ object FirErrors {
     val BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER by error0<FirSourceElement, PsiElement>()
     val ONLY_ONE_CLASS_BOUND_ALLOWED by error0<FirSourceElement, PsiElement>()
     val REPEATED_BOUND by error0<FirSourceElement, PsiElement>()
+    val CONFLICTING_UPPER_BOUNDS by error1<FirSourceElement, PsiElement, FirTypeParameterSymbol>()
 
     // Reflection
     val EXTENSION_IN_CLASS_REFERENCE_NOT_ALLOWED by error1<FirSourceElement, KtExpression, FirCallableDeclaration<*>>(SourceElementPositioningStrategies.REFERENCE_BY_QUALIFIED)

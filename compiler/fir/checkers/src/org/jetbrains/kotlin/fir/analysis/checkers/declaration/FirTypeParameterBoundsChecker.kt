@@ -7,15 +7,16 @@ package org.jetbrains.kotlin.fir.analysis.checkers.declaration
 
 import org.jetbrains.kotlin.KtNodeTypes
 import org.jetbrains.kotlin.descriptors.ClassKind
-import org.jetbrains.kotlin.fir.analysis.checkers.canHaveSubtypes
+import org.jetbrains.kotlin.fir.analysis.checkers.*
 import org.jetbrains.kotlin.fir.analysis.checkers.context.CheckerContext
-import org.jetbrains.kotlin.fir.analysis.checkers.isInlineOnly
-import org.jetbrains.kotlin.fir.analysis.checkers.toRegularClass
 import org.jetbrains.kotlin.fir.analysis.diagnostics.DiagnosticReporter
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors
 import org.jetbrains.kotlin.fir.analysis.diagnostics.reportOn
 import org.jetbrains.kotlin.fir.declarations.*
+import org.jetbrains.kotlin.fir.typeContext
 import org.jetbrains.kotlin.fir.types.*
+import org.jetbrains.kotlin.types.model.KotlinTypeMarker
+import org.jetbrains.kotlin.types.model.TypeCheckerProviderContext
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 object FirTypeParameterBoundsChecker : FirTypeParameterChecker() {
@@ -46,6 +47,7 @@ object FirTypeParameterBoundsChecker : FirTypeParameterChecker() {
         }
 
         checkBoundUniqueness(declaration, context, reporter)
+        checkConflictingBounds(declaration, context, reporter)
     }
 
     private fun checkOnlyOneTypeParameterBound(declaration: FirTypeParameter, context: CheckerContext, reporter: DiagnosticReporter) {
@@ -92,5 +94,30 @@ object FirTypeParameterBoundsChecker : FirTypeParameterChecker() {
             reporter.reportOn(bound.source, FirErrors.REPEATED_BOUND, context)
         }
     }
+
+    private fun checkConflictingBounds(declaration: FirTypeParameter, context: CheckerContext, reporter: DiagnosticReporter) {
+        if (declaration.bounds.size < 2) return
+
+        fun anyConflictingTypes(types: List<ConeKotlinType>): Boolean {
+            types.forEach { type ->
+                if (!type.canHaveSubtypes(context.session)) {
+                    types.forEach { otherType ->
+                        if (type != otherType && !type.isRelated(context.session.typeContext, otherType)){
+                            return true
+                        }
+                    }
+                }
+            }
+            return false
+        }
+
+        if (anyConflictingTypes(declaration.bounds.map { it.coneType })) {
+            reporter.reportOn(declaration.source, FirErrors.CONFLICTING_UPPER_BOUNDS, declaration.symbol, context)
+        }
+    }
+
+    private fun KotlinTypeMarker.isRelated(context: TypeCheckerProviderContext, type: KotlinTypeMarker?): Boolean =
+        isSubtypeOf(context, type) || isSupertypeOf(context, type)
+
 
 }

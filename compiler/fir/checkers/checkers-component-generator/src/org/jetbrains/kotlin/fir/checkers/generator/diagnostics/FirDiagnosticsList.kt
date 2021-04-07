@@ -305,6 +305,10 @@ object DIAGNOSTICS_LIST : DiagnosticList() {
         val ONLY_ONE_CLASS_BOUND_ALLOWED by error<FirSourceElement, PsiElement>()
         
         val REPEATED_BOUND by error<FirSourceElement, PsiElement>()
+
+        val CONFLICTING_UPPER_BOUNDS by error<FirSourceElement, PsiElement> {
+            parameter<FirTypeParameterSymbol>("typeParameter")
+        }
     }
 
     val REFLECTION by object : DiagnosticGroup("Reflection") {
