@@ -15,10 +15,7 @@ import org.jetbrains.kotlin.fir.analysis.diagnostics.DiagnosticReporter
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors
 import org.jetbrains.kotlin.fir.analysis.diagnostics.reportOn
 import org.jetbrains.kotlin.fir.declarations.*
-import org.jetbrains.kotlin.fir.types.ConeTypeParameterType
-import org.jetbrains.kotlin.fir.types.FirTypeRef
-import org.jetbrains.kotlin.fir.types.coneType
-import org.jetbrains.kotlin.fir.types.isExtensionFunctionType
+import org.jetbrains.kotlin.fir.types.*
 import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 object FirTypeParameterBoundsChecker : FirTypeParameterChecker() {
@@ -48,7 +45,7 @@ object FirTypeParameterBoundsChecker : FirTypeParameterChecker() {
             checkOnlyOneTypeParameterBound(declaration, context, reporter)
         }
 
-        checkOnlyOneClassBound(declaration, context, reporter)
+        checkBoundUniqueness(declaration, context, reporter)
     }
 
     private fun checkOnlyOneTypeParameterBound(declaration: FirTypeParameter, context: CheckerContext, reporter: DiagnosticReporter) {
@@ -78,15 +75,22 @@ object FirTypeParameterBoundsChecker : FirTypeParameterChecker() {
     }
 
 
-    private fun checkOnlyOneClassBound(declaration: FirTypeParameter, context: CheckerContext, reporter: DiagnosticReporter) {
+    private fun checkBoundUniqueness(declaration: FirTypeParameter, context: CheckerContext, reporter: DiagnosticReporter) {
         val seenClasses = mutableSetOf<FirRegularClass>()
-        val bounds = declaration.bounds.distinctBy { it.coneType }
-        bounds.forEach { bound ->
+        val allNonErrorBounds = declaration.bounds.filter { it !is FirErrorTypeRef }
+        val uniqueBounds = allNonErrorBounds.distinctBy { it.coneType.classId ?: it.coneType }
+        
+        uniqueBounds.forEach { bound ->
             bound.coneType.toRegularClass(context.session)?.let { clazz ->
                 if (classKinds.contains(clazz.classKind) && seenClasses.add(clazz) && seenClasses.size > 1) {
                     reporter.reportOn(bound.source, FirErrors.ONLY_ONE_CLASS_BOUND_ALLOWED, context)
                 }
             }
         }
+
+        allNonErrorBounds.minus(uniqueBounds).forEach { bound ->
+            reporter.reportOn(bound.source, FirErrors.REPEATED_BOUND, context)
+        }
     }
+
 }

@@ -184,6 +184,7 @@ import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.REDUNDANT_SETTER_
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.REDUNDANT_SINGLE_EXPRESSION_STRING_TEMPLATE
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.REDUNDANT_VISIBILITY_MODIFIER
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.REIFIED_TYPE_IN_CATCH_CLAUSE
+import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.REPEATED_BOUND
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.REPEATED_MODIFIER
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.RESERVED_MEMBER_INSIDE_INLINE_CLASS
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.RETURN_IN_FUNCTION_WITH_EXPRESSION_BODY
@@ -457,7 +458,8 @@ class FirDefaultErrorMessages : DefaultErrorMessages.Extension {
                 "Type parameter cannot have any other bounds if it's bounded by another type parameter"
             )
 
-            map.put(ONLY_ONE_CLASS_BOUND_ALLOWED,"Only one of the upper bounds can be a class")
+            map.put(ONLY_ONE_CLASS_BOUND_ALLOWED, "Only one of the upper bounds can be a class")
+            map.put(REPEATED_BOUND, "Type parameter already has this bound")
 
             // Reflection
             map.put(

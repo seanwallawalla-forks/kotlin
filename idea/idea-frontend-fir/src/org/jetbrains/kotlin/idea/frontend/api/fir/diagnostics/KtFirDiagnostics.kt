@@ -664,6 +664,10 @@ sealed class KtFirDiagnostic<PSI: PsiElement> : KtDiagnosticWithPsi<PSI> {
         override val diagnosticClass get() = OnlyOneClassBoundAllowed::class
     }
 
+    abstract class RepeatedBound : KtFirDiagnostic<PsiElement>() {
+        override val diagnosticClass get() = RepeatedBound::class
+    }
+
     abstract class ExtensionInClassReferenceNotAllowed : KtFirDiagnostic<KtExpression>() {
         override val diagnosticClass get() = ExtensionInClassReferenceNotAllowed::class
         abstract val referencedDeclaration: KtCallableSymbol
