@@ -58,6 +58,7 @@ import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.COMPONENT_FUNCTIO
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.COMPONENT_FUNCTION_ON_NULLABLE
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.CONFLICTING_OVERLOADS
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.CONFLICTING_PROJECTION
+import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.CONFLICTING_UPPER_BOUNDS
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.CONSTRUCTOR_IN_INTERFACE
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.CONSTRUCTOR_IN_OBJECT
 import org.jetbrains.kotlin.fir.analysis.diagnostics.FirErrors.CYCLIC_CONSTRUCTOR_DELEGATION_CALL
@@ -460,6 +461,12 @@ class FirDefaultErrorMessages : DefaultErrorMessages.Extension {
 
             map.put(ONLY_ONE_CLASS_BOUND_ALLOWED, "Only one of the upper bounds can be a class")
             map.put(REPEATED_BOUND, "Type parameter already has this bound")
+
+            map.put(
+                CONFLICTING_UPPER_BOUNDS,
+                "Upper bounds of {0} have empty intersection",
+                SYMBOL
+            )
 
             // Reflection
             map.put(
